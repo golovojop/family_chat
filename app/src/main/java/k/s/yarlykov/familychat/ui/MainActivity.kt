@@ -1,15 +1,27 @@
-package k.s.yarlykov.familychat
+package k.s.yarlykov.familychat.ui
+
+/**
+ * https://code.tutsplus.com/ru/tutorials/how-to-create-an-android-chat-app-using-firebase--cms-27397
+ */
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.database.FirebaseListAdapter
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import k.s.yarlykov.familychat.R
+import k.s.yarlykov.familychat.ui.data.ChatMessage
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.message.*
+import java.text.SimpleDateFormat
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         FirebaseApp.initializeApp(this)
         checkAuth()
+        initViews()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -64,6 +77,33 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    fun initViews() {
+        fab.setOnClickListener {
+            FirebaseDatabase
+                .getInstance()
+                .reference
+                .push()
+                .setValue(ChatMessage(input.text.toString(),
+                    FirebaseAuth.getInstance()
+                        .currentUser!!
+                        .getDisplayName()!!))
+            input.setText("")
+        }
+
+        list_of_messages.adapter =
+            object : FirebaseListAdapter<ChatMessage>(this,
+                ChatMessage::class.java,
+                R.layout.message,
+                FirebaseDatabase.getInstance().reference) {
+                override fun populateView(v: View?, model: ChatMessage?, position: Int) {
+
+                    message_text.text = model?.message
+                    message_user.text = model?.user
+                    message_time.setText(SimpleDateFormat("dd-MM-yyyy (HH:mm:ss)").format(model?.time))
+                }
+            }
     }
 
     private fun checkAuth() {
