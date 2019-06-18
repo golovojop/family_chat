@@ -21,7 +21,7 @@ import k.s.yarlykov.familychat.R
 import k.s.yarlykov.familychat.ui.data.ChatMessage
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.message.*
-import java.text.SimpleDateFormat
+import java.text.DateFormat
 
 class MainActivity : AppCompatActivity() {
 
@@ -88,26 +88,13 @@ class MainActivity : AppCompatActivity() {
                 .setValue(ChatMessage(input.text.toString(),
                     FirebaseAuth.getInstance()
                         .currentUser!!
-                        .getDisplayName()!!))
+                        .displayName!!))
             input.setText("")
         }
-
-        list_of_messages.adapter =
-            object : FirebaseListAdapter<ChatMessage>(this,
-                ChatMessage::class.java,
-                R.layout.message,
-                FirebaseDatabase.getInstance().reference) {
-                override fun populateView(v: View?, model: ChatMessage?, position: Int) {
-
-                    message_text.text = model?.message
-                    message_user.text = model?.user
-                    message_time.setText(SimpleDateFormat("dd-MM-yyyy (HH:mm:ss)").format(model?.time))
-                }
-            }
     }
 
     private fun checkAuth() {
-        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+        if(FirebaseAuth.getInstance().currentUser == null) {
             // Start sign in/sign up activity
             startActivityForResult(
                 AuthUI.getInstance()
@@ -132,6 +119,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayChatMessages() {
 
+        val adapter = object: FirebaseListAdapter<ChatMessage>(this, ChatMessage::class.java,
+            R.layout.message, FirebaseDatabase.getInstance().reference) {
+            override fun populateView(v: View?, model: ChatMessage?, position: Int) {
+                messageText.text = model?.message
+                messageUser.text = model?.user
+                messageTime.text = DateFormat.getDateInstance().format(model?.time)
+            }
+        }
+
+        list_of_messages.adapter = adapter
     }
 
     companion object {
