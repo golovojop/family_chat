@@ -2,6 +2,7 @@ package k.s.yarlykov.familychat.ui
 
 /**
  * https://code.tutsplus.com/ru/tutorials/how-to-create-an-android-chat-app-using-firebase--cms-27397
+ * https://code.tutsplus.com/tutorials/how-to-create-an-android-chat-app-using-firebase--cms-27397?ec_unit=translation-info-language
  */
 
 import android.app.Activity
@@ -23,14 +24,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.message.*
 import java.text.DateFormat
 
+private const val NONSECURE_NOTES = "nonsecure_notes"
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         FirebaseApp.initializeApp(this)
-        checkAuth()
         initViews()
+        checkAuth()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -81,46 +84,71 @@ class MainActivity : AppCompatActivity() {
 
     fun initViews() {
         fab.setOnClickListener {
-            FirebaseDatabase
+
+            val refRoot = FirebaseDatabase
                 .getInstance()
                 .reference
+            val refNotes = refRoot.child(NONSECURE_NOTES)
+
+            refNotes
                 .push()
-                .setValue(ChatMessage(input.text.toString(),
-                    FirebaseAuth.getInstance()
-                        .currentUser!!
-                        .displayName!!))
+                .setValue(ChatMessage(
+                    input.text.toString(),
+                    FirebaseAuth.getInstance().currentUser!!.displayName!!))
             input.setText("")
         }
     }
 
     private fun checkAuth() {
-        if(FirebaseAuth.getInstance().currentUser == null) {
-            // Start sign in/sign up activity
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .build(),
-                SIGN_IN_REQUEST_CODE
-            )
-        } else {
-            // User is already signed in. Therefore, display
-            // a welcome Toast
-            Toast.makeText(this,
-                "Welcome " + FirebaseAuth.getInstance()
-                    .currentUser!!
-                    .displayName,
-                Toast.LENGTH_LONG)
-                .show()
-
-            // Load chat room contents
+        FirebaseAuth.getInstance().currentUser?.let {
             displayChatMessages()
+            return
         }
+
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .build(),
+            SIGN_IN_REQUEST_CODE
+        )
+
+//        if(FirebaseAuth.getInstance().currentUser == null) {
+//            // Start sign in/sign up activity
+//            startActivityForResult(
+//                AuthUI.getInstance()
+//                    .createSignInIntentBuilder()
+//                    .build(),
+//                SIGN_IN_REQUEST_CODE
+//            )
+//        } else {
+//            // User is already signed in. Therefore, display
+//            // a welcome Toast
+//            Toast.makeText(this,
+//                "Welcome " + FirebaseAuth.getInstance()
+//                    .currentUser!!
+//                    .displayName,
+//                Toast.LENGTH_LONG)
+//                .show()
+//
+//            // Load chat room contents
+//            displayChatMessages()
+//        }
     }
 
     private fun displayChatMessages() {
 
-        val adapter = object: FirebaseListAdapter<ChatMessage>(this, ChatMessage::class.java,
-            R.layout.message, FirebaseDatabase.getInstance().reference) {
+        /**
+         * Вот пример того как правильно запрашивать данные.
+         * Как проверять, что подключен к базе и т.д.
+         * https://github.com/googlearchive/AndroidChat/blob/master/app/src/main/java/com/firebase/androidchat/MainActivity.java
+         */
+
+        val adapter = object: FirebaseListAdapter<ChatMessage>(
+            this,
+            ChatMessage::class.java,
+            R.layout.message,
+            FirebaseDatabase.getInstance().reference.child(NONSECURE_NOTES)) {
+
             override fun populateView(v: View?, model: ChatMessage?, position: Int) {
                 messageText.text = model?.message
                 messageUser.text = model?.user
@@ -129,7 +157,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         list_of_messages.adapter = adapter
+
     }
+
+
 
     companion object {
         const val SIGN_IN_REQUEST_CODE = 101
