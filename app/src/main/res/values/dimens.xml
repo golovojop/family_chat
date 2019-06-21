@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="activity_vertical_margin">64dp</dimen>
-    <dimen name="activity_horizontal_margin">64dp</dimen>
+    <dimen name="activity_vertical_margin">12dp</dimen>
+    <dimen name="activity_horizontal_margin">24dp</dimen>
+
+    <!-- CardView params -->
+    <dimen name="card_margin">12dp</dimen>
+    <dimen name="card_album_radius">8dp</dimen>
+    <dimen name="album_cover_height">200dp</dimen>
+    <dimen name="elevation" >3dp</dimen>
 
 </resources>

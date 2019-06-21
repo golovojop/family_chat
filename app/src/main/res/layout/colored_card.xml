@@ -5,24 +5,29 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:background="@drawable/message_border"
                                     card_view:cardUseCompatPadding="true"
-                                    card_view:cardElevation="2dp">
+                                    card_view:cardElevation="4dp">
+
+    <!-- Подкрашвает карточку вертикальной цветной полосой слева -->
+    <!-- Это получается за счет margina LinearLayout левого края родителя-->
+    <FrameLayout
+            android:background="#FF0000"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:background="@drawable/message_border"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:background="@android:color/holo_blue_bright"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal">
 
             <TextView
                     android:id="@+id/messageUser"
-                    android:background="@android:color/transparent"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
@@ -32,8 +37,6 @@
                     android:gravity="start" />
             <TextView
                     android:id="@+id/messageTime"
-                    android:background="@android:color/transparent"
-
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -43,8 +46,6 @@
         </LinearLayout>
         <TextView
                 android:id="@+id/messageText"
-                android:background="@android:color/transparent"
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
