@@ -4,6 +4,9 @@ import com.google.firebase.database.IgnoreExtraProperties
 import java.util.*
 
 @IgnoreExtraProperties
-data class ChatMessage(val message: String? = "",
-                       val user: String? = "",
-                       val time: Long = Date().time)
+data class ChatMessage(
+    val uid: String? = "",
+    val user: String? = "",
+    val message: String? = "",
+    val time: Long = Date().time
+)

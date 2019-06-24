@@ -91,9 +91,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun initViews() {
+    private fun initViews() {
         fab.setOnClickListener {
-
             val refRoot = FirebaseDatabase
                 .getInstance()
                 .reference
@@ -102,8 +101,10 @@ class MainActivity : AppCompatActivity() {
             refNotes
                 .push()
                 .setValue(ChatMessage(
-                    input.text.toString(),
-                    FirebaseAuth.getInstance().currentUser!!.displayName!!))
+                    FirebaseAuth.getInstance().currentUser!!.uid,
+                    FirebaseAuth.getInstance().currentUser!!.displayName!!,
+                    input.text.toString()
+                ))
             input.setText("")
         }
     }
@@ -184,14 +185,23 @@ class MainActivity : AppCompatActivity() {
         val data = ArrayList<Map<String, Any?>>()
         for (message in messages) {
             val map = mapOf(
-                KEY_MESSAGE to message.message,
+                KEY_UID to message.uid,
                 KEY_USER to message.user,
+                KEY_MESSAGE to message.message,
                 KEY_TIME to android.text.format.DateFormat.format(timeFormat(message.time), Date(message.time)))
             data.add(map)
         }
 
-        val from = arrayOf(KEY_MESSAGE, KEY_USER, KEY_TIME)
-        val to = intArrayOf(R.id.messageText, R.id.messageUser, R.id.messageTime)
+        /**
+         * Важный момент. Мы хотим в кастомном ViewBinder устанавливать форму рамки в зависимости от того
+         * свое или чужое сообщение отображается. То есть ViewBinder должен получить на обработку родительскую
+         * ViewGroup элемента списка (у нас это LinearLayout id:llMessage) и установить её фон (нашу рамку).
+         * Так вот, чтобы система вызывала setViewValue для конкретного View, мы должны указать id этого View
+         * в массиве to[], а в массиве from[] ключ мапы для передаваемого в View значения. В коде ниже
+         * мы элементу R.id.llMessage передаем значение, которое хранится в мапе по ключу KEY_UID.
+         */
+        val from = arrayOf(KEY_MESSAGE, KEY_USER, KEY_TIME, KEY_UID)
+        val to = intArrayOf(R.id.messageText, R.id.messageUser, R.id.messageTime, R.id.llMessage)
 
         lv.adapter = SimpleAdapter(
             this,
@@ -219,8 +229,9 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val SIGN_IN_REQUEST_CODE = 101
 
-        const val KEY_MESSAGE = "message"
+        const val KEY_UID = "uid"
         const val KEY_USER = "user"
+        const val KEY_MESSAGE = "message"
         const val KEY_TIME = "time"
     }
 }
