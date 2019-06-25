@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity() {
             R.layout.message,
             from,
             to).apply {
-            viewBinder = CustomViewBinder()
+            viewBinder = CustomViewBinder(applicationContext)
         }
     }
 

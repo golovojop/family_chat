@@ -1,31 +1,32 @@
 package k.s.yarlykov.familychat.ui
 
+import android.content.Context
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SimpleAdapter
 import com.google.firebase.auth.FirebaseAuth
 import k.s.yarlykov.familychat.R
 
-class CustomViewBinder : SimpleAdapter.ViewBinder {
+
+import k.s.yarlykov.familychat.ui.extensions.dipToPix
+
+class CustomViewBinder(val context: Context) : SimpleAdapter.ViewBinder {
 
     override fun setViewValue(view: View, data: Any?, textRepresentation: String?): Boolean {
         val context = view.context
 
-        when(view.id) {
+        when (view.id) {
             R.id.llMessage -> {
-
-                val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-
+                val layoutParams = view.layoutParams as LinearLayout.LayoutParams
                 var border = R.drawable.message_border_left_angle
-//                layoutParams.marginStart = 0
-//                layoutParams.marginEnd = 20
 
-                if(FirebaseAuth.getInstance().currentUser!!.uid == (data as String)) {
+                if (FirebaseAuth.getInstance().currentUser!!.uid == (data as String)) {
                     border = R.drawable.message_border_right_angle
-//                    layoutParams.marginStart = 20
-//                    layoutParams.marginEnd = 0
+                    layoutParams.marginStart = context.dipToPix(24F)
+                } else {
+                    layoutParams.marginEnd = context.dipToPix(24F)
                 }
 
                 val drawable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -35,11 +36,12 @@ class CustomViewBinder : SimpleAdapter.ViewBinder {
                 }
 
                 view.background = (drawable)
-//                view.layoutParams = layoutParams
+                view.layoutParams = layoutParams
                 return true
             }
         }
 
         return false
     }
+
 }

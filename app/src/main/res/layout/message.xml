@@ -1,43 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/llMessage"
-              android:background="@drawable/message_border"
+              android:background="@android:color/transparent"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:layout_margin="0dp"
               android:orientation="vertical">
 
+    <!-- Дополнительная LinearLayout требуется для того, чтобы в CustomViewBinder::setViewValue -->
+    <!-- получить правильный инстанс LayoutParams, а именно LinearLayout.LayoutParams вместо -->
+    <!-- android.widget.AbsListView$LayoutParams. Тогда будет возможность менять margin. -->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:background="@android:color/transparent"
+                  android:background="@drawable/message_border"
+                  android:id="@+id/llMessage"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:orientation="horizontal">
+                  android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:background="@android:color/transparent"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <TextView
+                    android:id="@+id/messageUser"
+                    android:background="@android:color/transparent"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:layout_margin="4dp"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:gravity="start"/>
+            <TextView
+                    android:id="@+id/messageTime"
+                    android:background="@android:color/transparent"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:textSize="12sp"
+                    android:gravity="end"/>
+        </LinearLayout>
         <TextView
-                android:id="@+id/messageUser"
+                android:id="@+id/messageText"
                 android:background="@android:color/transparent"
-                android:layout_width="0px"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:layout_margin="4dp"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="start"/>
-        <TextView
-                android:id="@+id/messageTime"
-                android:background="@android:color/transparent"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="4dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
                 android:textSize="12sp"
-                android:gravity="end"/>
+                android:gravity="start"/>
+
+
     </LinearLayout>
-    <TextView
-            android:id="@+id/messageText"
-            android:background="@android:color/transparent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
-            android:textSize="12sp"
-            android:gravity="start"/>
+
 </LinearLayout>
