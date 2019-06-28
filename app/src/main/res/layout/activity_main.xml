@@ -35,6 +35,7 @@
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_send_black_24dp"
                 android:hint="Input"
                 android:id="@+id/input" />
     </android.support.design.widget.TextInputLayout>
