@@ -3,7 +3,9 @@ package k.s.yarlykov.familychat.ui
 import android.content.Context
 import android.os.Build
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SimpleAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -24,9 +26,12 @@ class CustomViewBinder(val context: Context) : SimpleAdapter.ViewBinder {
 
                 if (FirebaseAuth.getInstance().currentUser!!.uid == (data as String)) {
                     border = R.drawable.message_border_right_angle
-                    layoutParams.marginStart = context.dipToPix(24F)
+//                    layoutParams.marginStart = context.dipToPix(24F)
+                    layoutParams.gravity = Gravity.END
+
                 } else {
-                    layoutParams.marginEnd = context.dipToPix(24F)
+//                    layoutParams.marginEnd = context.dipToPix(24F)
+                    layoutParams.gravity = Gravity.START
                 }
 
                 val drawable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

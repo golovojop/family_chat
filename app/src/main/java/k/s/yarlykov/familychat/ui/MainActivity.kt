@@ -213,7 +213,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     // Определаить в каком формате выводить время сообщения
     private fun timeFormat(time: Long) : String {
         val c = Calendar.getInstance().apply {
@@ -223,7 +222,7 @@ class MainActivity : AppCompatActivity() {
             set(Calendar.MILLISECOND, 0)
         }
         val currentDayDuration = Date().time - c.timeInMillis
-        return if(Date().time - time > currentDayDuration) "dd/MM HH:mm" else "HH:mm"
+        return if(Date().time - time > currentDayDuration) "dd/MM\nHH:mm" else "HH:mm"
     }
 
     companion object {
